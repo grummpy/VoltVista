@@ -39,4 +39,4 @@ Run `chmod +x build.sh run-dev.sh` and then `./build.sh` with JDK 17 or newer. T
 - `web/`: responsive front end and interactive SVG visualizations
 - `data/ev_data.csv`: bundled CS 508 dataset
 - `assets/voltvista-cover.png`: original app cover artwork
-- `src/CSVDatabaseOriginal.java`: preserved original console implementation
+- `legacy/CSVDatabase.java`: preserved original console implementation
