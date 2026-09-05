@@ -32,6 +32,8 @@ Run `VoltVista-Setup.exe` and follow the installer, or unzip `VoltVista-Windows-
 
 The working copy is stored in `~/Library/Application Support/VoltVista` on macOS and `%APPDATA%\VoltVista` on Windows. The bundled original dataset remains inside the app.
 
+VoltVista always uses `http://127.0.0.1:47821`, so an existing dashboard tab reconnects after an app restart. Clicking the running app again reopens the dashboard. Diagnostic logs are stored beside the working data as `voltvista.log`.
+
 ## Build from source
 
 On macOS, run `chmod +x build.sh run-dev.sh` and then `./build.sh`. On Windows, run `powershell -ExecutionPolicy Bypass -File build-windows.ps1`. JDK 17 or newer with `jpackage` is required only for building from source.

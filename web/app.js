@@ -28,3 +28,6 @@ $('#save').onclick=async()=>{try{await json('/api/save',{method:'POST'});updateS
 $('#fileInput').onchange=async e=>{const file=e.target.files[0];if(!file)return;if(!confirm(`Replace the working database with ${file.name}?`))return;try{const text=await file.text();const result=await json('/api/import',{method:'POST',headers:{'Content-Type':'text/csv'},body:text});toast(`Imported ${fmt(result.rows)} rows`);await loadMeta();await refresh()}catch(err){toast(err.message,true)}finally{e.target.value=''}};
 window.addEventListener('keydown',e=>{if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='s'){e.preventDefault();$('#save').click()}if(e.key==='Escape'&&$('#addDialog').open)$('#addDialog').close()});
 (async()=>{try{await loadMeta();await refresh()}catch(e){toast(e.message,true);$('#viewSummary').textContent='Could not load the database.'}})();
+
+let connectionWasLost=false;
+setInterval(async()=>{try{await json('/api/health');if(connectionWasLost){connectionWasLost=false;toast('Connection restored');await loadMeta();await refresh()}}catch(e){connectionWasLost=true;$('#viewSummary').textContent='Connection lost. Reopen VoltVista, then this page will reconnect automatically.';toast('VoltVista connection lost',true)}},15000);

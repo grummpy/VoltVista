@@ -1,6 +1,8 @@
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
 import java.awt.Desktop;
+import java.awt.desktop.AppReopenedEvent;
+import java.awt.desktop.AppReopenedListener;
 import java.io.*;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
@@ -10,6 +12,7 @@ import java.util.concurrent.Executors;
 
 /** Native Java launcher and HTTP API for the VoltVista desktop dashboard. */
 public final class VoltVistaServer {
+    private static final int PORT = 47821;
     private final DataManager database = new DataManager();
     private final Path appData = applicationDataDirectory();
     private final Path activeCsv = appData.resolve("ev_data.csv");
@@ -35,12 +38,21 @@ public final class VoltVistaServer {
 
     private void start(String[] args) throws Exception {
         Files.createDirectories(appData);
+        installLogging();
         Path requested = argument(args, "--data");
         if (requested != null) Files.copy(requested, activeCsv, StandardCopyOption.REPLACE_EXISTING);
         if (!Files.exists(activeCsv)) copyBundled("/data/ev_data.csv", activeCsv);
         database.load(activeCsv);
 
-        HttpServer server = HttpServer.create(new InetSocketAddress(InetAddress.getLoopbackAddress(), 0), 0);
+        URI uri = URI.create("http://127.0.0.1:" + PORT + "/");
+        HttpServer server;
+        try {
+            server = HttpServer.create(new InetSocketAddress(InetAddress.getLoopbackAddress(), PORT), 0);
+        } catch (BindException alreadyRunning) {
+            openDashboard(uri);
+            return;
+        }
+        server.createContext("/api/health", ex -> sendJson(ex, 200, "{\"ok\":true}"));
         server.createContext("/api/meta", this::meta);
         server.createContext("/api/records", this::records);
         server.createContext("/api/stats", this::stats);
@@ -51,9 +63,36 @@ public final class VoltVistaServer {
         server.setExecutor(Executors.newFixedThreadPool(6));
         server.start();
 
-        URI uri = URI.create("http://127.0.0.1:" + server.getAddress().getPort() + "/");
         System.out.println("VoltVista is running at " + uri);
-        if (Desktop.isDesktopSupported()) Desktop.getDesktop().browse(uri);
+        if (Desktop.isDesktopSupported()) {
+            Desktop desktop = Desktop.getDesktop();
+            if (desktop.isSupported(Desktop.Action.APP_EVENT_REOPENED)) {
+                desktop.addAppEventListener((AppReopenedListener) (AppReopenedEvent event) -> openDashboard(uri));
+            }
+        }
+        openDashboard(uri);
+    }
+
+    private void openDashboard(URI uri) {
+        try {
+            if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+                Desktop.getDesktop().browse(uri);
+            }
+        } catch (Exception error) {
+            System.err.println("Could not open dashboard: " + error.getMessage());
+        }
+    }
+
+    private void installLogging() {
+        try {
+            Path log = appData.resolve("voltvista.log");
+            PrintStream stream = new PrintStream(new FileOutputStream(log.toFile(), true), true, StandardCharsets.UTF_8);
+            System.setOut(stream);
+            System.setErr(stream);
+            Thread.setDefaultUncaughtExceptionHandler((thread, error) -> error.printStackTrace(stream));
+        } catch (IOException ignored) {
+            // The app can continue without a file log if the directory is not writable.
+        }
     }
 
     private void meta(HttpExchange ex) throws IOException {

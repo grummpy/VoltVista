@@ -23,6 +23,6 @@ jpackage --type exe --name VoltVista --dest $DistDir --input $BuildDir `
   --add-modules java.desktop,jdk.httpserver `
   --description "Electric vehicle intelligence dashboard" --vendor "VoltVista" `
   --win-menu --win-shortcut --win-dir-chooser `
-  --app-version 1.0.1
+  --app-version 1.0.2
 
 Get-ChildItem $DistDir
