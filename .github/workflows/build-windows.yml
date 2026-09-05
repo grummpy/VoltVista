@@ -1,0 +1,35 @@
+name: Build Windows release
+
+on:
+  workflow_dispatch:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+      - name: Test Java backend
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force build-test | Out-Null
+          javac --add-modules jdk.httpserver -d build-test src/DataManager.java src/VoltVistaServer.java src/DataManagerTest.java
+          java -cp build-test DataManagerTest data/ev_data.csv
+      - name: Build portable app and installer
+        shell: pwsh
+        run: ./build-windows.ps1
+      - uses: actions/upload-artifact@v4
+        with:
+          name: VoltVista-Windows
+          path: |
+            dist-windows/*.exe
+            dist-windows/*.zip
+          if-no-files-found: error

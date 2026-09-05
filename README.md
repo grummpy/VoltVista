@@ -1,14 +1,18 @@
 # VoltVista
 
-VoltVista is a local-first electric-vehicle intelligence dashboard powered by a Java database backend. It preserves the project’s required ArrayList storage, stable merge sort, and HashMap indexing while adding a responsive front end, interactive SVG analytics, safe CSV editing, and a double-click macOS application.
+VoltVista is a local-first electric-vehicle intelligence dashboard powered by a Java database backend. It preserves the project’s required ArrayList storage, stable merge sort, and HashMap indexing while adding a responsive front end, interactive SVG analytics, safe CSV editing, and double-click applications for macOS and Windows.
 
-## Open the app
+## Open the app on macOS
 
 1. Unzip `VoltVista-macOS.zip`.
 2. Double-click `VoltVista.app`.
 3. The dashboard opens in the default browser and loads the bundled CS 508 dataset.
 
 The app includes its own Java runtime. No Java or JavaFX setup is required. Because this educational build is not Apple-notarized, macOS may require Control-clicking the app and choosing **Open** the first time.
+
+## Open the app on Windows
+
+Run `VoltVista-Setup.exe` and follow the installer, or unzip `VoltVista-Windows-Portable.zip` and double-click `VoltVista.exe`. Both distributions include Java, so JavaFX and a separate JDK are not required. Windows SmartScreen may ask for confirmation because this educational build is not code-signed.
 
 ## Features
 
@@ -26,11 +30,11 @@ The app includes its own Java runtime. No Java or JavaFX setup is required. Beca
 
 ## Data location
 
-The working copy is stored at `~/Library/Application Support/VoltVista/ev_data.csv`. The bundled original dataset remains inside the app.
+The working copy is stored in `~/Library/Application Support/VoltVista` on macOS and `%APPDATA%\VoltVista` on Windows. The bundled original dataset remains inside the app.
 
 ## Build from source
 
-Run `chmod +x build.sh run-dev.sh` and then `./build.sh` with JDK 17 or newer. The app image and ZIP are written to `dist/`.
+On macOS, run `chmod +x build.sh run-dev.sh` and then `./build.sh`. On Windows, run `powershell -ExecutionPolicy Bypass -File build-windows.ps1`. JDK 17 or newer with `jpackage` is required only for building from source.
 
 ## Architecture
 

@@ -11,10 +11,27 @@ import java.util.concurrent.Executors;
 /** Native Java launcher and HTTP API for the VoltVista desktop dashboard. */
 public final class VoltVistaServer {
     private final DataManager database = new DataManager();
-    private final Path appData = Path.of(System.getProperty("user.home"), "Library", "Application Support", "VoltVista");
+    private final Path appData = applicationDataDirectory();
     private final Path activeCsv = appData.resolve("ev_data.csv");
 
     public static void main(String[] args) throws Exception { new VoltVistaServer().start(args); }
+
+    private static Path applicationDataDirectory() {
+        String os = System.getProperty("os.name", "").toLowerCase(Locale.ROOT);
+        if (os.contains("win")) {
+            String appData = System.getenv("APPDATA");
+            return appData == null || appData.isBlank()
+                ? Path.of(System.getProperty("user.home"), "AppData", "Roaming", "VoltVista")
+                : Path.of(appData, "VoltVista");
+        }
+        if (os.contains("mac")) {
+            return Path.of(System.getProperty("user.home"), "Library", "Application Support", "VoltVista");
+        }
+        String xdg = System.getenv("XDG_DATA_HOME");
+        return xdg == null || xdg.isBlank()
+            ? Path.of(System.getProperty("user.home"), ".local", "share", "VoltVista")
+            : Path.of(xdg, "VoltVista");
+    }
 
     private void start(String[] args) throws Exception {
         Files.createDirectories(appData);
