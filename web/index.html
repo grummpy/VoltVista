@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>VoltVista EV Intelligence</title><link rel="stylesheet" href="/styles.css">
+  <style>.intro{position:relative;overflow:hidden;padding:24px;min-height:150px;border:1px solid var(--line);border-radius:18px;background:linear-gradient(90deg,#07111ff5 0%,#07111fd8 43%,#07111f33 100%),url('/voltvista-cover.png') center/cover;box-shadow:var(--shadow)}.intro>div{position:relative;z-index:1}</style>
+</head>
+<body>
+  <div class="ambient a1"></div><div class="ambient a2"></div>
+  <header class="topbar">
+    <button class="brand-mark" id="refresh" title="Refresh dashboard" aria-label="Refresh dashboard">
+      <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M28 3 10 27h12l-3 18 19-27H26z"/></svg>
+    </button>
+    <div><h1>VoltVista</h1><p>EV adoption intelligence for faster decisions</p></div>
+    <div class="header-actions">
+      <label class="button ghost" for="fileInput">Import CSV</label><input id="fileInput" type="file" accept=".csv,text/csv" hidden>
+      <button class="button ghost" id="save">Save changes</button>
+      <button class="button primary" id="add">Add record</button>
+    </div>
+  </header>
+
+  <main>
+    <aside class="sidebar panel">
+      <div class="side-head"><span>Explore data</span><button id="clear" class="text-button">Clear</button></div>
+      <label>Search all columns<input id="search" type="search" placeholder="County, state, date…"></label>
+      <label>State<select id="state"><option value="">All states</option></select></label>
+      <label>County<select id="county" disabled><option value="">All counties</option></select></label>
+      <label>Vehicle primary use<select id="use"><option value="">All uses</option></select></label>
+      <label>Group analytics by<select id="group"><option value="state">State</option><option value="county">County</option><option value="primary use">Primary use</option><option value="date">Date</option></select></label>
+      <div class="pulse" role="button" tabindex="0" id="pulse" title="Refresh live metrics">
+        <svg viewBox="0 0 260 155" aria-label="Interactive EV pulse meter">
+          <defs><linearGradient id="pulseGradient"><stop stop-color="#41e6b4"/><stop offset="1" stop-color="#34b8ff"/></linearGradient></defs>
+          <circle class="track" cx="78" cy="77" r="48"/><circle class="meter" id="meter" cx="78" cy="77" r="48"/>
+          <text x="78" y="73" class="pulse-number" id="pulseValue">0%</text><text x="78" y="92" class="pulse-label">weighted EV share</text>
+          <path class="spark" d="M145 100 C158 79 168 112 180 85 S202 68 213 89 230 74 247 49"/>
+          <circle class="spark-dot d1" cx="180" cy="85" r="4"/><circle class="spark-dot d2" cx="213" cy="89" r="4"/><circle class="spark-dot d3" cx="247" cy="49" r="4"/>
+          <text x="145" y="30" class="pulse-caption">LIVE DATA PULSE</text><text x="145" y="51" class="pulse-total" id="pulseTotal">0 EVs</text>
+        </svg>
+      </div>
+      <p class="hint">State selection unlocks counties. Charts and KPIs follow every filter.</p>
+    </aside>
+
+    <section class="content">
+      <div class="intro"><div><p class="eyebrow">CURRENT VIEW</p><h2>Electric vehicle landscape</h2><p id="viewSummary">Loading database…</p></div><span class="status-chip" id="saveStatus">Saved</span></div>
+      <section class="kpi-grid" id="kpis" aria-label="Key performance indicators"></section>
+      <section class="analytics-grid">
+        <article class="panel chart-card"><div class="card-title"><div><p class="eyebrow">COMPARISON</p><h3 id="barTitle">Top states by weighted EV share</h3></div><span class="legend"><i></i> EV share</span></div><svg id="barChart" class="chart" role="img"></svg></article>
+        <article class="panel chart-card"><div class="card-title"><div><p class="eyebrow">POWERTRAIN MIX</p><h3>BEV and PHEV totals</h3></div></div><div class="donut-wrap"><svg id="donutChart" viewBox="0 0 220 220" role="img"></svg><div class="donut-legend" id="donutLegend"></div></div></article>
+      </section>
+      <section class="panel records-card">
+        <div class="records-head"><div><p class="eyebrow">DATABASE</p><h3>Records <span id="recordCount"></span></h3></div><div class="table-actions"><span id="selectedCount">0 selected</span><button class="button danger" id="delete" disabled>Delete selected</button></div></div>
+        <div class="table-scroll"><table><thead id="thead"></thead><tbody id="tbody"></tbody></table></div>
+        <div class="pagination"><button id="prev" class="button ghost">Previous</button><span id="pageInfo"></span><button id="next" class="button ghost">Next</button></div>
+      </section>
+    </section>
+  </main>
+
+  <dialog id="addDialog"><form id="addForm"><div class="dialog-head"><div><p class="eyebrow">NEW DATA</p><h2>Add EV record</h2></div><button type="button" class="close" id="closeDialog" aria-label="Close">×</button></div><div id="formFields" class="form-grid"></div><p class="form-error" id="formError"></p><div class="dialog-actions"><button type="button" class="button ghost" id="cancelAdd">Cancel</button><button class="button primary" type="submit">Add to database</button></div></form></dialog>
+  <div class="toast" id="toast" role="status"></div>
+  <script src="/app.js"></script>
+</body></html>

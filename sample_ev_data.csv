@@ -1,0 +1,17 @@
+State,BEV,PHEV,EV_Percent,County,Make,Type,Year
+WA,1200,340,4.2,King,Tesla,BEV,2023
+WA,450,180,3.1,Snohomish,Chevrolet,PHEV,2022
+CA,8500,2100,5.8,Los Angeles,Tesla,BEV,2024
+CA,3200,900,4.9,San Francisco,BMW,PHEV,2023
+OR,680,220,3.6,Multnomah,Nissan,BEV,2022
+OR,210,95,2.8,Lane,Toyota,PHEV,2021
+NY,1900,780,2.4,New York,Ford,BEV,2023
+NY,620,410,1.9,Erie,Tesla,PHEV,2022
+TX,2100,550,1.5,Travis,Chevrolet,BEV,2024
+TX,890,300,1.2,Harris,Hyundai,PHEV,2023
+CO,980,310,3.4,Denver,Tesla,BEV,2023
+CO,340,150,2.9,Boulder,Rivian,BEV,2024
+FL,1500,420,2.1,Miami-Dade,Tesla,BEV,2023
+FL,600,280,1.7,Orange,Kia,PHEV,2022
+WA,300,120,2.5,Pierce,Ford,BEV,2021
+CA,1100,400,5.2,San Diego,Tesla,BEV,2024
